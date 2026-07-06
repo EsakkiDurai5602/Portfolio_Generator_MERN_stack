@@ -46,10 +46,8 @@ function Portfolio() {
     }
 
     try {
-      // Add print mode class for professional styling override
       element.classList.add("pdf-print-mode");
 
-      // Capture the element into a canvas
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -57,23 +55,20 @@ function Portfolio() {
         backgroundColor: "#ffffff"
       });
 
-      // Remove print mode class to restore screen styling immediately
       element.classList.remove("pdf-print-mode");
 
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
       
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 295; // A4 height in mm
+      const imgWidth = 210;
+      const pageHeight = 295; 
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       let heightLeft = imgHeight;
       let position = 0;
 
-      // Add the first page
       pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
 
-      // Add subsequent pages if content is taller than one A4 page
       while (heightLeft > 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
@@ -292,7 +287,6 @@ function Portfolio() {
             </div>
           )}
 
-        {/* Likes and Comments Section */}
         <div className="section" data-html2canvas-ignore="true" style={{ marginTop: '40px', borderTop: '2px solid var(--card-border)', paddingTop: '32px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
             <h3 style={{ margin: 0, border: 'none', padding: 0 }}>Social Interactions</h3>
@@ -317,7 +311,6 @@ function Portfolio() {
             </button>
           </div>
 
-          {/* Comments List */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px' }}>
             <h4 style={{ fontSize: '16px', color: 'var(--text-primary)', fontWeight: '700' }}>Comments ({portfolio.comments ? portfolio.comments.length : 0})</h4>
             {portfolio.comments && portfolio.comments.length > 0 ? (
@@ -329,7 +322,6 @@ function Portfolio() {
                   </div>
                   <p style={{ margin: 0, color: 'var(--text-primary)', fontSize: '14px', lineHeight: '1.5' }}>{comment.text}</p>
 
-                  {/* Replies List */}
                   {comment.replies && comment.replies.length > 0 && (
                     <div style={{ marginTop: '16px', paddingLeft: '16px', borderLeft: '2px solid var(--accent-color)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       {comment.replies.map((reply) => (
@@ -344,7 +336,6 @@ function Portfolio() {
                     </div>
                   )}
 
-                  {/* Reply Input Form */}
                   <div style={{ marginTop: '16px', display: 'flex', gap: '10px' }}>
                     <input
                       type="text"
@@ -368,7 +359,6 @@ function Portfolio() {
             )}
           </div>
 
-          {/* Add Comment Form */}
           <form onSubmit={handleAddComment} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <textarea
               placeholder="Write a comment..."

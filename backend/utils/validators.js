@@ -20,7 +20,7 @@ const schemas = {
     email: Joi.string().email(),
     fullName: Joi.string().min(2).max(50),
     title: Joi.string().max(100),
-    profileImage: Joi.string().uri().allow(""),
+    profileImage: Joi.string().allow(""),
     about: Joi.string().max(1000),
     skills: Joi.array().items(Joi.string()),
     education: Joi.array().items(

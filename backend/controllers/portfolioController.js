@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Portfolio = require("../models/Portfolio");
 const User = require("../models/User");
 const { validate } = require("../utils/validators");
@@ -40,9 +41,14 @@ async function getPortfolio(req, res) {
   try {
     const { identifier } = req.params;
 
-    let portfolio = await Portfolio.findOne({
-      $or: [{ userId: identifier }, { email: identifier }],
-    }).populate("userId", "name email role");
+    let query = {};
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      query = { $or: [{ userId: identifier }, { email: identifier }] };
+    } else {
+      query = { email: identifier };
+    }
+
+    let portfolio = await Portfolio.findOne(query).populate("userId", "name email role");
 
     if (!portfolio) {
       return sendError(res, "Portfolio not found", 404);

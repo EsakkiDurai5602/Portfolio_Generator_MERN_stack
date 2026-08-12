@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
 
 const {
   createPortfolio,
@@ -32,14 +33,30 @@ router.post("/upload", authMiddleware, upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, message: "No file uploaded" });
   }
-  const host = req.get("host");
-  const protocol = req.protocol;
-  const fileUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
-  return res.json({
-    success: true,
-    message: "File uploaded successfully",
-    url: fileUrl,
-  });
+  try {
+    const filePath = req.file.path;
+    const fileBuffer = fs.readFileSync(filePath);
+    const mimeType = req.file.mimetype;
+    const base64Data = fileBuffer.toString("base64");
+    const dataUrl = `data:${mimeType};base64,${base64Data}`;
+
+    // Clean up local ephemeral file after conversion to Base64
+    fs.unlink(filePath, (err) => {
+      if (err) console.error("Error deleting temporary uploaded file:", err);
+    });
+
+    return res.json({
+      success: true,
+      message: "File uploaded successfully",
+      url: dataUrl,
+    });
+  } catch (err) {
+    console.error("Upload process error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to process file upload",
+    });
+  }
 });
 
 router.delete(

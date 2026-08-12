@@ -10,7 +10,7 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 
 function RoutePage() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
